@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "keycounter",
+  "name": "Key Counter",
+  "description": "Simple mod that counts number of times key pressed this session",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["ComputerButter"],
+  "credits": "ComputerButter (aka PseudonymPatel)",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
