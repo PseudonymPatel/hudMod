@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 public class CountingGui extends Gui {
 
@@ -23,10 +24,6 @@ public class CountingGui extends Gui {
     private int height;
     private int width;
 
-    //position of gui on screen
-    private int xPos;
-    private int yPos;
-
     public CountingGui(Minecraft mc) {
         ScaledResolution scaled = new ScaledResolution(mc);
         this.width = scaled.getScaledWidth();
@@ -34,15 +31,13 @@ public class CountingGui extends Gui {
         this.mc = mc;
 
         this.counts = 0;
-
-        //todo: load from config
-        this.xPos = 100;
-        this.yPos = 0;
     }
 
     @SubscribeEvent
-    public void drawGui(RenderGameOverlayEvent.Post event) {
-        drawCenteredString(mc.fontRendererObj, (prefix + counts), xPos, yPos, Integer.parseInt("FFAA00", 16));
+    public void drawGui(RenderGameOverlayEvent.Text event) {
+        GL11.glPushMatrix();
+        drawCenteredString(mc.fontRendererObj, (prefix + counts), ConfigHandler.xPos, ConfigHandler.yPos, Integer.parseInt("FFAA00", 16));
+        GL11.glPopMatrix();
     }
 
     public void incrementCount() {
@@ -52,12 +47,17 @@ public class CountingGui extends Gui {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onJump(LivingEvent.LivingJumpEvent event) {
+        //todo: if on multiplayer, will get called correct number of times, no need to do only half
         if (event.entity instanceof EntityPlayer) {
-            if (isJumping) {
-                incrementCount();
-                isJumping = false;
+            if (Minecraft.getMinecraft().isSingleplayer()) {
+                if (isJumping) {
+                    incrementCount();
+                    isJumping = false;
+                } else {
+                    isJumping = true;
+                }
             } else {
-                isJumping = true;
+                incrementCount();
             }
         }
     }
