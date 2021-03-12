@@ -23,12 +23,12 @@ public class keyCommand extends CommandBase {
 
     @Override
     public List<String> getCommandAliases() {
-        return Collections.singletonList("keyC");
+        return Collections.singletonList("keyc");
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/keyC set <variable> <value>";
+        return "/keyc set <variable> <value>";
     }
 
     @Override
