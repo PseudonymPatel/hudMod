@@ -1,4 +1,4 @@
-package keyCounter;
+package parkourHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -42,6 +42,10 @@ public class CountingGui extends Gui {
 
     public void incrementCount() {
         counts++;
+    }
+
+    public void resetCount() {
+        counts = 0;
     }
 
     @SideOnly(Side.CLIENT)

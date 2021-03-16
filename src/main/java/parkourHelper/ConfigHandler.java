@@ -1,4 +1,4 @@
-package keyCounter;
+package parkourHelper;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,8 +15,8 @@ import java.io.FileWriter;
 
 public class ConfigHandler {
 
-    public static Logger LOGGER = LogManager.getLogger("keycounter");
-    public static File configFile;
+    private static Logger LOGGER = LogManager.getLogger(ParkourHelper.MODID);
+    private static File configFile;
     private static JsonObject jsonConfig;
 
     public static int xPos;
@@ -27,7 +27,7 @@ public class ConfigHandler {
         getConfig();
     }
 
-    public static void getConfig() {
+    private static void getConfig() {
         if (configFile.exists()) {
 
             try {
@@ -42,7 +42,7 @@ public class ConfigHandler {
             } catch (Exception ex) {
 
                 ex.printStackTrace();
-                LOGGER.log(Level.FATAL, "keyCounter: There was an error loading the config. Resetting all settings to default.");
+                LOGGER.log(Level.FATAL, "ParkourHelper: There was an error loading the config. Resetting all settings to default.");
                 addDefaultsAndSave();
                 return;
             }
@@ -57,7 +57,7 @@ public class ConfigHandler {
                 if (jsonConfig.has("yPos")) {
                     yPos = jsonConfig.get("yPos").getAsInt();
                 } else {
-                    yPos = 0;
+                    yPos = 1;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -66,9 +66,9 @@ public class ConfigHandler {
         }
     }
 
-    public static void addDefaultsAndSave() {
-        xPos = 120;
-        yPos = 0;
+    private static void addDefaultsAndSave() {
+        xPos = 140;
+        yPos = 1;
         saveConfig();
     }
 

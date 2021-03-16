@@ -1,4 +1,4 @@
-package keyCounter;
+package parkourHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -8,27 +8,28 @@ import net.minecraft.util.ChatComponentText;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import parkourHelper.util.Path;
 
 import java.util.Collections;
 import java.util.List;
 
-public class keyCommand extends CommandBase {
+public class CommandHandler extends CommandBase {
 
-    private static Logger LOGGER = LogManager.getLogger("keycounter");
+    private static Logger LOGGER = LogManager.getLogger(ParkourHelper.MODID);
 
     @Override
     public String getCommandName() {
-        return "keycommand";
+        return ParkourHelper.MODID;
     }
 
     @Override
     public List<String> getCommandAliases() {
-        return Collections.singletonList("keyc");
+        return Collections.singletonList("pkh");
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/keyc set <variable> <value>";
+        return "/pkh set <variable> <value>";
     }
 
     @Override
@@ -59,6 +60,10 @@ public class keyCommand extends CommandBase {
                     LOGGER.log(Level.ERROR, "Key was wrong, not xPos or yPos");
                     throw new CommandException("invalKey");
                 }
+            } else if (args[0].equalsIgnoreCase("toggleDraw")) {
+                ParkourHelper.pathDrawer.doPathDrawing = !ParkourHelper.pathDrawer.doPathDrawing;
+            } else if (args[0].equalsIgnoreCase("newPath")) {
+                ParkourHelper.pathDrawer.startNewPath();
             } else {
                 Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("not valid, did you mean to add a set before value?"));
             }

@@ -1,4 +1,4 @@
-# keyCounter
+# parkourHelper
 This is a simple forge mod that adds a couple nifty "features" for ppl, like counting the number of jumps.
 Move around the jump counter with `/keyc set xPos <number>` or `/keyc set yPos <number>`
 

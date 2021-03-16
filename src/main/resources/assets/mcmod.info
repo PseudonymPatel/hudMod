@@ -1,8 +1,8 @@
 [
 {
-  "modid": "keycounter",
-  "name": "Key Counter",
-  "description": "Simple mod that counts number of times key pressed this session",
+  "modid": "parkourhelper",
+  "name": "Parkour Helper",
+  "description": "Simple mod that allows for tracking small parkour-related information, like movement and jumps.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
