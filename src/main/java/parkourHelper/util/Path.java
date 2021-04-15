@@ -7,52 +7,72 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
+import parkourHelper.ConfigHandler;
 import parkourHelper.ParkourHelper;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class Path {
     private static Logger LOGGER = LogManager.getLogger(ParkourHelper.MODID);
 
-    private ArrayList<Vec3> pathNodes;
-    private int color = 0xFFAA00;
+    private ArrayList<PathNode> pathNodes = new ArrayList<PathNode>();
+    private ArrayList<Vec3> jumpNodes = new ArrayList<Vec3>();
+
+    public Color pathColor = new Color(0x910000);
+    private Color jumpColor = new Color(0xFF0000);
 
     public Path() {
-        pathNodes = new ArrayList<Vec3>();
+
     }
 
-    public Path(ArrayList<Vec3> nodes) {
-        pathNodes = nodes;
+    public Path(Color color) {
+        this.pathColor = color;
     }
 
-    public void addNode(Vec3 node) {
+    public void addNode(PathNode node) {
         pathNodes.add(node);
     }
 
-    public ArrayList<Vec3> getNodes() {
+    public void addJumpNode(Vec3 node) {
+        jumpNodes.add(node);
+    }
+
+    public ArrayList<PathNode> getNodes() {
         return pathNodes;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setColor(int colorHex) {
+        this.pathColor = new Color(colorHex);
+    }
+    public void setColor(Color color) {
+        this.pathColor = color;
     }
 
-    public void drawPath(RenderWorldLastEvent event) {
+    public void drawPath(DrawBlockHighlightEvent event) {
         if (pathNodes.size() <= 1) return;
 
         try {
+            GL11.glPushMatrix();
+            GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
             GlStateManager.pushMatrix();
             GlStateManager.pushAttrib();
-            GlStateManager.color(1F, 0F, 0F);
+
+            // GL settings to configure
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glEnable(GL11.GL_BLEND);
+
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+            //GlStateManager.color(pathColor.getRed(), pathColor.getGreen(), pathColor.getBlue());
 
             WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
 
@@ -65,27 +85,57 @@ public class Path {
             //Apply 0-our transforms to set everything back to 0,0,0
             renderer.setTranslation(-d0, -d1, -d2);
 
+            //---- Draw path line
             //GL_LINES makes dashed lines (depending on speed)
-            renderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+            renderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+            GL11.glLineWidth((float) ConfigHandler.lineWidth);
 
-            Vec3 start = pathNodes.get(0);
-            renderer.pos(start.xCoord, start.yCoord, start.zCoord).color(1.0F, 0F, 0F, 0.5F).endVertex();
+            PathNode start = pathNodes.get(0);
+            renderer.pos(start.xCoord, start.yCoord + 0.001F, start.zCoord).color(start.pathColor.getRed(), start.pathColor.getGreen(), start.pathColor.getBlue(), start.pathColor.getAlpha()).endVertex();
 
             //connect to next node
             for (int i = 1; i < pathNodes.size(); i++) {
-                Vec3 toNode = pathNodes.get(i);
-                renderer.pos(toNode.xCoord, toNode.yCoord, toNode.zCoord).color(1F, 0F, 0F, 0.5F).endVertex();
+                PathNode toNode = pathNodes.get(i);
+                renderer.pos(toNode.xCoord, toNode.yCoord + 0.001F, toNode.zCoord).color(toNode.pathColor.getRed(), toNode.pathColor.getGreen(), toNode.pathColor.getBlue(), toNode.pathColor.getAlpha()).endVertex();
             }
 
-            LOGGER.log(Level.INFO, "drew" + renderer.getVertexCount() + " vertices, state: " + renderer.getVertexState());
             Tessellator.getInstance().draw();
+
+            //---- Draw jump dots
+            if (jumpNodes.size() > 0) {
+                renderer.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
+                //GL11.glPointSize((float) ConfigHandler.pointWidth);
+
+                for (Vec3 point : jumpNodes) {
+                    renderer.pos(point.xCoord, point.yCoord, point.zCoord).color(jumpColor.getRed(), jumpColor.getGreen(), jumpColor.getBlue(), jumpColor.getAlpha()).endVertex();
+                }
+
+                Tessellator.getInstance().draw();
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.ERROR, "[ParkourHelper] Problem drawing paths: " + e);
+            e.printStackTrace();
+
+            WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
+
+            try {
+                renderer.finishDrawing(); //make sure to clean up for other things.
+            } catch (IllegalStateException err) {
+                LOGGER.log(Level.ERROR, "[ParkourHelper] Error trying to clean up after erroring: " + err.getMessage());
+            }
+        } finally {
+            WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
 
             //unset the transition, making things normal again.
             renderer.setTranslation(0, 0, 0);
-            GlStateManager.popMatrix();
+
+            //unconfigure our settings
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+
             GlStateManager.popAttrib();
-        } catch (Exception e) {
-            LOGGER.log(Level.FATAL, e);
+            GlStateManager.popMatrix();
+            GL11.glPopAttrib();
+            GL11.glPopMatrix();
         }
     }
 }

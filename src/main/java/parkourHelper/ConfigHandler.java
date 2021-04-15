@@ -22,6 +22,12 @@ public class ConfigHandler {
     public static int xPos;
     public static int yPos;
 
+    public static int lineWidth;
+    public static int pointWidth;
+
+    //todo: add saving for:
+    public static boolean useRandomColorForNewPaths = false;
+
     public static void init(File file) {
         configFile = file;
         getConfig();
@@ -59,6 +65,13 @@ public class ConfigHandler {
                 } else {
                     yPos = 1;
                 }
+
+                if (jsonConfig.has("lineWidth")) {
+                    lineWidth = jsonConfig.get("lineWidth").getAsInt();
+                } else {
+                    lineWidth = 5;
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 LOGGER.log(Level.FATAL, "Error doing json config parse:" + e);
@@ -69,6 +82,7 @@ public class ConfigHandler {
     private static void addDefaultsAndSave() {
         xPos = 140;
         yPos = 1;
+        lineWidth = 5;
         saveConfig();
     }
 
@@ -82,6 +96,7 @@ public class ConfigHandler {
 
             jsonConfig.addProperty("xPos", xPos);
             jsonConfig.addProperty("yPos", yPos);
+            jsonConfig.addProperty("lineWidth", lineWidth);
 
             bufferedWriter.write(jsonConfig.toString());
             bufferedWriter.close();

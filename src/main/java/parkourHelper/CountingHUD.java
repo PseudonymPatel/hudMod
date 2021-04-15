@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public class CountingGui extends Gui {
+public class CountingHUD extends Gui {
 
     private Minecraft mc;
 
@@ -24,7 +24,7 @@ public class CountingGui extends Gui {
     private int height;
     private int width;
 
-    public CountingGui(Minecraft mc) {
+    public CountingHUD(Minecraft mc) {
         ScaledResolution scaled = new ScaledResolution(mc);
         this.width = scaled.getScaledWidth();
         this.height = scaled.getScaledHeight();
@@ -51,7 +51,6 @@ public class CountingGui extends Gui {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onJump(LivingEvent.LivingJumpEvent event) {
-        //todo: if on multiplayer, will get called correct number of times, no need to do only half
         if (event.entity instanceof EntityPlayer) {
             if (Minecraft.getMinecraft().isSingleplayer()) {
                 if (isJumping) {
