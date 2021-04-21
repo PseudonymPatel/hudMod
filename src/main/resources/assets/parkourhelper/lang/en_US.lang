@@ -1,3 +1,9 @@
 notUse=Expected an int to set the variable to, but did not find that.
-failed=Did you forget to write the variable to set to?
+failed=Did you forget to write the variable to set?
 invalKey=There is no setting with that name.
+
+key.pkh=ParkourHelper
+
+key.config.toggleTrackKey=Toggle Path Tracking
+key.config.startTrackKey=Start New Path Tracking
+key.config.stopTrackKey=Stop Path Tracking

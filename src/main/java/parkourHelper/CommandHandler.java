@@ -94,17 +94,11 @@ public class CommandHandler extends CommandBase {
                 player.addChatMessage(new ChatComponentText("Stopped tracking path"));
 
             } else if (args[0].equalsIgnoreCase("toggle")) {
-                if (ParkourHelper.pathDrawer.doPathTracking) {
-                    ParkourHelper.pathDrawer.doPathTracking = false;
-                    player.addChatMessage(new ChatComponentText("Stopped tracking path"));
-                } else {
-                    ParkourHelper.pathDrawer.startNewPath();
-                    ParkourHelper.pathDrawer.doPathTracking = true;
-                    player.addChatMessage(new ChatComponentText("Started tracking new path"));
-                }
+                PathDrawer.togglePathTracking(player);
 
             } else if (args[0].equalsIgnoreCase("openSettings")) {
                 ParkourHelper.listener.shouldOpenGui = true;
+
             } else {
                 player.addChatMessage(new ChatComponentText("not valid, did you mean to add a set before value?"));
             }

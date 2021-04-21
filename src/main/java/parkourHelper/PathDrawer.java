@@ -1,10 +1,13 @@
 package parkourHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -44,9 +47,7 @@ public class PathDrawer {
 
     //todo: do line stuff when: player changes dimension,
     @SubscribeEvent
-    public void renderPath(DrawBlockHighlightEvent event) {
-        if (!Minecraft.getMinecraft().inGameHasFocus) return;
-
+    public void renderPath(RenderWorldLastEvent event) {
         //another version of player to get
 //        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 //        if (player == null) return;
@@ -95,15 +96,28 @@ public class PathDrawer {
         }
     }
 
-    void startNewPath() {
+    public void startNewPath() {
         if (ConfigHandler.useRandomColorForNewPaths) {
             colorToUse = Color.getHSBColor((float) Math.random(), 1, 1);
         } else {
             colorToUse = new Color(0x0C0091);
         }
-        Path newPath = new Path();
-        paths.add(newPath);
-        currentPath = newPath;
+        if (currentPath.getNodes().size() > 0) {
+            Path newPath = new Path();
+            paths.add(newPath);
+            currentPath = newPath;
+        }
+    }
+
+    public static void togglePathTracking(EntityPlayerSP player) {
+        if (ParkourHelper.pathDrawer.doPathTracking) {
+            ParkourHelper.pathDrawer.doPathTracking = false;
+            player.addChatMessage(new ChatComponentText("Stopped tracking path"));
+        } else {
+            ParkourHelper.pathDrawer.startNewPath();
+            ParkourHelper.pathDrawer.doPathTracking = true;
+            player.addChatMessage(new ChatComponentText("Started tracking new path"));
+        }
     }
 
     private boolean areVectorsNotEqual(Vec3 a, Vec3 b) {

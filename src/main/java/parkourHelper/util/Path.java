@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
@@ -57,14 +58,12 @@ public class Path {
         this.pathColor = color;
     }
 
-    public void drawPath(DrawBlockHighlightEvent event) {
+    public void drawPath(RenderWorldLastEvent event) {
         if (pathNodes.size() <= 1) return;
 
         try {
             GL11.glPushMatrix();
             GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-            GlStateManager.pushMatrix();
-            GlStateManager.pushAttrib();
 
             // GL settings to configure
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -132,8 +131,6 @@ public class Path {
             //unconfigure our settings
             GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-            GlStateManager.popAttrib();
-            GlStateManager.popMatrix();
             GL11.glPopAttrib();
             GL11.glPopMatrix();
         }
