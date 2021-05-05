@@ -2,6 +2,7 @@ package parkourHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,7 +32,15 @@ public class CommandHandler extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/pkh set <variable> <value>";
+        return "/pkh set <variable> <value>\n" +
+                "Setable values: xPos, yPos, lineWidth, pointWidth\n" +
+                "\txPos and yPos set the location of the jump counter\n" +
+                "\tpointWidth is the size of the dots made when you jump\n" +
+                "/pkh toggleDraw -- shows or hides paths\n" +
+                "/pkh start -- starts a new path\n" +
+                "/pkh stop -- stops tracking the current path\n" +
+                "/pkh toggle -- stops tracking a path if tracking one, or starts tracking if no current path\n\n" +
+                "**You can also use numpad 0 (configureable in controls) to toggle.**";
     }
 
     @Override
@@ -45,11 +54,11 @@ public class CommandHandler extends CommandBase {
                     try {
                         number = Integer.parseInt(args[2]);
                     } catch (NumberFormatException ex) {
-                        throw new CommandException("notUse");
+                        throw new CommandException("message.notUse");
                     }
                 }
                 if (number == null) {
-                    throw new CommandException("failed");
+                    throw new CommandException("message.failed");
                 }
 
                 if (args[1].equalsIgnoreCase("xPos")) {
@@ -64,9 +73,13 @@ public class CommandHandler extends CommandBase {
                     ConfigHandler.lineWidth = number;
                     ConfigHandler.saveConfig();
                     LOGGER.log(Level.INFO, "saving lineWidth");
+                } else if (args[1].equalsIgnoreCase("pointWidth")) {
+                    ConfigHandler.pointWidth = number;
+                    ConfigHandler.saveConfig();
+                    LOGGER.log(Level.INFO, "saving point width");
                 } else {
                     LOGGER.log(Level.ERROR, "Key was wrong, not xPos or yPos");
-                    throw new CommandException("invalKey");
+                    throw new CommandException("message.invalKey");
                 }
                 player.addChatMessage(new ChatComponentText("Attempted to change " + args[1] + " to " + args[2]));
 
@@ -75,23 +88,23 @@ public class CommandHandler extends CommandBase {
                 ParkourHelper.pathDrawer.doPathDrawing = !ParkourHelper.pathDrawer.doPathDrawing;
                 player.addChatMessage(new ChatComponentText("Toggled path drawing. Now " + (ParkourHelper.pathDrawer.doPathDrawing ? "on"  : "off")));
 
-            } else if (args[0].equalsIgnoreCase("newPath")) {
-                ParkourHelper.pathDrawer.startNewPath();
-                player.addChatMessage(new ChatComponentText("Started new path"));
-
-            } else if (args[0].equalsIgnoreCase("toggleTrack")) {
-                ParkourHelper.pathDrawer.doPathTracking = !ParkourHelper.pathDrawer.doPathTracking;
-                player.addChatMessage(new ChatComponentText("Toggled path tracking. Now " + (ParkourHelper.pathDrawer.doPathTracking ? "on"  : "off")));
+//            } else if (args[0].equalsIgnoreCase("newPath")) {
+//                ParkourHelper.pathDrawer.startNewPath();
+//                player.addChatMessage(new ChatComponentText(I18n.format("message.startedTracking")));
+//
+//            } else if (args[0].equalsIgnoreCase("toggleTrack")) {
+//                ParkourHelper.pathDrawer.doPathTracking = !ParkourHelper.pathDrawer.doPathTracking;
+//                player.addChatMessage(new ChatComponentText("Toggled path tracking. Now " + (ParkourHelper.pathDrawer.doPathTracking ? "on"  : "off")));
 
 
             } else if (args[0].equalsIgnoreCase("start")) {
                 ParkourHelper.pathDrawer.startNewPath();
                 ParkourHelper.pathDrawer.doPathTracking = true;
-                player.addChatMessage(new ChatComponentText("Started new path"));
+                player.addChatMessage(new ChatComponentText(I18n.format("message.startedTracking")));
 
             } else if (args[0].equalsIgnoreCase("stop")) {
                 ParkourHelper.pathDrawer.doPathTracking = false;
-                player.addChatMessage(new ChatComponentText("Stopped tracking path"));
+                player.addChatMessage(new ChatComponentText(I18n.format("message.stoppedTracking")));
 
             } else if (args[0].equalsIgnoreCase("toggle")) {
                 PathDrawer.togglePathTracking(player);
@@ -100,10 +113,10 @@ public class CommandHandler extends CommandBase {
                 ParkourHelper.listener.shouldOpenGui = true;
 
             } else {
-                player.addChatMessage(new ChatComponentText("not valid, did you mean to add a set before value?"));
+                player.addChatMessage(new ChatComponentText(getCommandUsage(null)));
             }
         } else {
-            ParkourHelper.listener.shouldOpenGui = true;
+            player.addChatMessage(new ChatComponentText(getCommandUsage(null)));
         }
     }
 

@@ -2,6 +2,7 @@ package parkourHelper.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -40,10 +41,10 @@ public class KeyBindingHandler {
             } else if (startKey.isPressed()) {
                 ParkourHelper.pathDrawer.startNewPath();
                 ParkourHelper.pathDrawer.doPathTracking = true;
-                player.addChatMessage(new ChatComponentText("Started new path"));
+                player.addChatMessage(new ChatComponentText(I18n.format("message.startedTracking")));
             } else if (stopKey.isPressed()) {
                 ParkourHelper.pathDrawer.doPathTracking = false;
-                player.addChatMessage(new ChatComponentText("Stopped tracking path"));
+                player.addChatMessage(new ChatComponentText(I18n.format("message.stoppedTracking")));
             }
         }
     }

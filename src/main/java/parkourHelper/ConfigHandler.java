@@ -70,6 +70,14 @@ public class ConfigHandler {
                     lineWidth = jsonConfig.get("lineWidth").getAsInt();
                 } else {
                     lineWidth = 5;
+                    saveConfig();
+                }
+
+                if (jsonConfig.has("pointWidth")) {
+                    pointWidth = jsonConfig.get("pointWidth").getAsInt();
+                } else {
+                    pointWidth = 10;
+                    saveConfig();
                 }
 
             } catch (Exception e) {
@@ -83,6 +91,7 @@ public class ConfigHandler {
         xPos = 140;
         yPos = 1;
         lineWidth = 5;
+        pointWidth = 7;
         saveConfig();
     }
 
@@ -97,6 +106,7 @@ public class ConfigHandler {
             jsonConfig.addProperty("xPos", xPos);
             jsonConfig.addProperty("yPos", yPos);
             jsonConfig.addProperty("lineWidth", lineWidth);
+            jsonConfig.addProperty("pointWidth", pointWidth);
 
             bufferedWriter.write(jsonConfig.toString());
             bufferedWriter.close();

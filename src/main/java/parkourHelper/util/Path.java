@@ -1,13 +1,11 @@
 package parkourHelper.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 import parkourHelper.ConfigHandler;
 import parkourHelper.ParkourHelper;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
@@ -29,7 +27,7 @@ public class Path {
     private ArrayList<Vec3> jumpNodes = new ArrayList<Vec3>();
 
     public Color pathColor = new Color(0x910000);
-    private Color jumpColor = new Color(0xFF0000);
+    private Color jumpColor = new Color(0x3EFF00);
 
     public Path() {
 
@@ -103,7 +101,7 @@ public class Path {
             //---- Draw jump dots
             if (jumpNodes.size() > 0) {
                 renderer.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
-                //GL11.glPointSize((float) ConfigHandler.pointWidth);
+                GL11.glPointSize((float) ConfigHandler.pointWidth);
 
                 for (Vec3 point : jumpNodes) {
                     renderer.pos(point.xCoord, point.yCoord, point.zCoord).color(jumpColor.getRed(), jumpColor.getGreen(), jumpColor.getBlue(), jumpColor.getAlpha()).endVertex();

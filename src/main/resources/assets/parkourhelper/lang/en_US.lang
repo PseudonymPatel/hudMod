@@ -1,9 +1,13 @@
-notUse=Expected an int to set the variable to, but did not find that.
-failed=Did you forget to write the variable to set?
-invalKey=There is no setting with that name.
-
 key.pkh=ParkourHelper
 
 key.config.toggleTrackKey=Toggle Path Tracking
 key.config.startTrackKey=Start New Path Tracking
 key.config.stopTrackKey=Stop Path Tracking
+
+message.startedTracking=Started new path
+message.stoppedTracking=Stopped tracking path
+
+message.notUse=Expected an int to set the variable to, but did not find that.
+message.failed=Did you forget to write the variable to set?
+message.invalKey=There is no setting with that name.
+message.notValidCommand=
