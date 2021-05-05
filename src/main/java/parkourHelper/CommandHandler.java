@@ -39,7 +39,8 @@ public class CommandHandler extends CommandBase {
                 "/pkh toggleDraw -- shows or hides paths\n" +
                 "/pkh start -- starts a new path\n" +
                 "/pkh stop -- stops tracking the current path\n" +
-                "/pkh toggle -- stops tracking a path if tracking one, or starts tracking if no current path\n\n" +
+                "/pkh toggle -- stops tracking a path if tracking one, or starts tracking if no current path\n" +
+                "/pkh clear -- clears all the paths\n\n" +
                 "**You can also use numpad 0 (configureable in controls) to toggle.**";
     }
 
@@ -111,6 +112,10 @@ public class CommandHandler extends CommandBase {
 
             } else if (args[0].equalsIgnoreCase("openSettings")) {
                 ParkourHelper.listener.shouldOpenGui = true;
+
+            } else if (args[0].equalsIgnoreCase("clear")) {
+                ParkourHelper.pathDrawer.clearPaths();
+                player.addChatMessage(new ChatComponentText("Cleared all the paths."));
 
             } else {
                 player.addChatMessage(new ChatComponentText(getCommandUsage(null)));

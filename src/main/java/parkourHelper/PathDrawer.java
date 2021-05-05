@@ -120,6 +120,11 @@ public class PathDrawer {
         }
     }
 
+    public void clearPaths() {
+        paths.clear();
+        startNewPath();
+    }
+
     private boolean areVectorsNotEqual(Vec3 a, Vec3 b) {
         return (a.squareDistanceTo(b) > 0.00000001); //square distance for less calculations per frame
     }
